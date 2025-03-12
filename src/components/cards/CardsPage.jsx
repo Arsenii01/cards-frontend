@@ -105,7 +105,10 @@ function CardsPage() {
                     ))
                     }
                 </ListGroup>
-                : <div/>
+                : <div className="text-center py-5">
+                    <i className="fas fa-id-card fa-3x text-muted mb-3"></i>
+                    <p className="text-muted">У вас пока нет визиток. Нажмите "Добавить визитку", чтобы создать новую.</p>
+                </div>
             }
             {error && (
                 <div className={"alert alert-danger text-center mt-4"}>
