@@ -4,17 +4,60 @@ import {Link, useNavigate} from "react-router-dom";
 import url from "../commons.js";
 import {Button, ListGroup, ListGroupItem, Modal} from "react-bootstrap";
 
+/**
+ * Компонент страницы визиток.
+ * Отображает список визиток и позволяет управлять ими.
+ */
 function CardsPage() {
+    /**
+     * Список визиток
+     * @type {Array<Object>}
+     */
     const [cards, setCards] = useState([])
+
+    /**
+     * Сообщение об ошибке
+     * @type {string}
+     */
     const [error, setError] = useState("");
+
     const navigate = useNavigate();
+
+    /**
+     * Показывает модальное окно подтверждения удаления
+     * @type {boolean}
+     */
     const [showConfirm, setShowConfirm] = useState(false);
+
+    /**
+     * ID визитки для удаления
+     * @type {number|null}
+     */
     const [cardToDelete, setCardToDelete] = useState(null);
+
+    /**
+     * ID визитки, на которую наведена мышь
+     * @type {number|null}
+     */
     const [hoveredCard, setHoveredCard] = useState(null);
+
+    /**
+     * Сообщение об ошибке удаления
+     * @type {string}
+     */
     const [deleteError, setDeleteError] = useState("")
+
+    /**
+     * Устанавливает сообщение об ошибке
+     * @param {string} message - Сообщение об ошибке
+     */
     const showError = (message) => {
         setError(message);
     };
+
+    /**
+     * Получает список визиток с сервера
+     */
     const getCards = () => {
         const token = localStorage.getItem('token')
         if (token === null) {
@@ -43,17 +86,27 @@ function CardsPage() {
 
     }
 
-
+    /**
+     * Обрабатывает нажатие на кнопку удаления визитки
+     * @param {number} cardId - ID визитки для удаления
+     */
     const handleDeleteClick = (cardId) => {
         setCardToDelete(cardId);
         setShowConfirm(true);
     };
 
+    /**
+     * Устанавливает сообщение об ошибке удаления
+     * @param {string} message - Сообщение об ошибке удаления
+     */
     const showDeleteError = (message) => {
         setDeleteError(message)
         setTimeout(() => setDeleteError(null), 5000)
     }
 
+    /**
+     * Подтверждает удаление визитки
+     */
     const confirmDelete = () => {
         if (!cardToDelete) return;
         axios.delete(url + `/card/${cardToDelete}`, {

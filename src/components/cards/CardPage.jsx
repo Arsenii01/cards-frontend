@@ -5,22 +5,62 @@ import url from "../commons.js";
 import {Button, Col, Container, Modal, Row} from "react-bootstrap";
 import {QRCodeSVG} from 'qrcode.react';
 
+/**
+ * Компонент страницы отдельной визитки.
+ * Отображает информацию о визитке и позволяет управлять ею.
+ */
 export default function CardPage() {
     const { id } = useParams();
     const navigate = useNavigate();
+
+    /**
+     * Данные визитки
+     * @type {Object|null}
+     */
     const [card, setCard] = useState(null);
+
+    /**
+     * Флаг загрузки данных
+     * @type {boolean}
+     */
     const [loading, setLoading] = useState(true);
+
+    /**
+     * Сообщение об ошибке
+     * @type {string|null}
+     */
     const [error, setError] = useState(null);
 
+    /**
+     * Показывает модальное окно подтверждения удаления
+     * @type {boolean}
+     */
     const [showConfirm, setShowConfirm] = useState(false);
+
+    /**
+     * ID визитки для удаления
+     * @type {number|null}
+     */
     const [cardToDelete, setCardToDelete] = useState(null);
+
+    /**
+     * Сообщение об ошибке удаления
+     * @type {string}
+     */
     const [deleteError, setDeleteError] = useState("")
 
+    /**
+     * Обрабатывает нажатие на кнопку удаления визитки
+     * @param {number} cardId - ID визитки для удаления
+     */
     const handleDeleteClick = (cardId) => {
         setCardToDelete(cardId);
         setShowConfirm(true);
     };
 
+    /**
+     * Подтверждает удаление визитки
+     */
     const confirmDelete = () => {
         if (!cardToDelete) return;
         axios.delete(url + `/card/${cardToDelete}`, {
@@ -42,6 +82,10 @@ export default function CardPage() {
         });
     };
 
+    /**
+     * Устанавливает сообщение об ошибке удаления
+     * @param {string} message - Сообщение об ошибке удаления
+     */
     const showDeleteError = (message) => {
         setDeleteError(message)
         setTimeout(() => setDeleteError(null), 5000)
@@ -68,13 +112,15 @@ export default function CardPage() {
         fetchCard();
     }, [id]);
 
+    /**
+     * Копирует ссылку на визитку в буфер обмена
+     */
     const copyLink = () => {
         if (card) {
             navigator.clipboard.writeText(`http://localhost:8080/card-landing/${card.landingId}`);
             alert("Ссылка скопирована!");
         }
     };
-
 
     if (loading) return <p className={"text-center m-auto"}>Загрузка...</p>;
     if (error) return (<>{error && (

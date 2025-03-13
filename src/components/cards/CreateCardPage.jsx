@@ -4,53 +4,142 @@ import axios from "axios";
 import url from "../commons.js";
 import {Button, Form} from "react-bootstrap";
 
-export default function CreateCardPage() {
+/**
+ * Компонент страницы создания визитки.
+ * Позволяет пользователю ввести информацию о визитке и отправить её на сервер.
+ */
+function CreateCardPage() {
+    /**
+     * Название визитки
+     * @type {string}
+     */
     const [cardName, setCardName] = useState('');
+
+    /**
+     * Полное имя
+     * @type {string}
+     */
     const [fullName, setFullName] = useState('');
+
+    /**
+     * Фамилия
+     * @type {string}
+     */
     const [surname, setSurname] = useState('');
+
+    /**
+     * Должность
+     * @type {string}
+     */
     const [position, setPosition] = useState('');
+
+    /**
+     * Номер телефона
+     * @type {string}
+     */
     const [phoneNumber, setPhoneNumber] = useState('');
+
+    /**
+     * Email
+     * @type {string}
+     */
     const [email, setEmail] = useState('');
+
+    /**
+     * Образование
+     * @type {string}
+     */
     const [degree, setDegree] = useState('');
+
+    /**
+     * О себе
+     * @type {string}
+     */
     const [aboutMe, setAboutMe] = useState('');
+
+    /**
+     * Адрес
+     * @type {string}
+     */
     const [address, setAddress] = useState('');
+
+    /**
+     * Социальные сети
+     * @type {Array<Object>}
+     */
     const [socialNetworks, setSocialNetworks] = useState([{}]);
+
+    /**
+     * Информация о компании
+     * @type {Object}
+     */
     const [companyInfo, setCompanyInfo] = useState({ companyName: '', businessLine: '', phoneNumber: '', email: '', companyWebsite: '', address: '' });
 
+    /**
+     * Ошибка
+     * @type {string}
+     */
     const [error, setError] = useState("");
+
+    /**
+     * Ошибка генерации текста
+     * @type {string}
+     */
     const [generateErrorText, setGenerateErrorTest] = useState("")
 
+    /**
+     * Показывает ошибку
+     * @param {string} message - Сообщение об ошибке
+     */
     const showError = (message) => {
         setError(message);
         setTimeout(() => setError(null), 5000);
     };
 
+    /**
+     * Показывает ошибку генерации
+     * @param {string} message - Сообщение об ошибке генерации
+     */
     const showGenerateError = (message) => {
         setGenerateErrorTest(message)
         setTimeout(() => setGenerateErrorTest(null), 5000);
-
     }
 
     const navigate = useNavigate()
 
-
+    /**
+     * Обрабатывает изменение списка социальных сетей
+     * @param {number} index - Индекс социальной сети
+     * @param {string} field - Поле для изменения
+     * @param {string} value - Новое значение
+     */
     const handleSocialNetworkChange = (index, field, value) => {
         const newSocialNetworks = [...socialNetworks];
         newSocialNetworks[index][field] = value;
         setSocialNetworks(newSocialNetworks);
     };
 
+    /**
+     * Добавляет новую социальную сеть
+     */
     const addSocialNetwork = () => {
         setSocialNetworks([...socialNetworks, { name: '', link: '' }]);
     };
 
+    /**
+     * Удаляет социальную сеть
+     * @param {number} index - Индекс социальной сети для удаления
+     */
     const removeSocialNetwork = (index) => {
         const newSocialNetworks = socialNetworks.filter((_, i) => i !== index);
         setSocialNetworks(newSocialNetworks);
     };
 
-
-
+    /**
+     * Обрабатывает изменение информации о компании
+     * @param {string} field - Поле для изменения
+     * @param {string} value - Новое значение
+     */
     const handleCompanyInfoChange = (field, value) => {
         setCompanyInfo({
             ...companyInfo,
@@ -60,6 +149,9 @@ export default function CreateCardPage() {
         console.log(companyInfo)
     };
 
+    /**
+     * Обрабатывает создание визитки
+     */
     const handleCreateCard = async () => {
         console.log(companyInfo)
         if (cardName === '' || cardName === null || fullName === null || fullName === '') {
@@ -73,10 +165,8 @@ export default function CreateCardPage() {
             return;
         }
 
-
         const filteredSocialNetworks = socialNetworks.filter(social => social.name && social.link && social.name.trim() !== '' && social.link.trim() !== '');
         setSocialNetworks(filteredSocialNetworks);
-
 
         const cardData = {
             ...(cardName && { cardName }),
@@ -137,6 +227,9 @@ export default function CreateCardPage() {
         }
     };
 
+    /**
+     * Генерирует текст "О себе" на основе должности и образования
+     */
     const generateAboutMe = async () => {
         if (!position.trim() || !degree.trim()) {
             showGenerateError("Необходимо заполнить поля \"Должность\" и \"Образование\" для создания текста");
@@ -275,3 +368,5 @@ export default function CreateCardPage() {
         </div>
     )
 }
+
+export default CreateCardPage

@@ -4,30 +4,116 @@ import axios from "axios";
 import url from "../commons.js";
 import {Button, Form} from "react-bootstrap";
 
+/**
+ * Компонент страницы редактирования визитки.
+ * Позволяет пользователю редактировать информацию о визитке и сохранять изменения.
+ */
 export default function EditCardPage() {
     const {id} = useParams();
+
+    /**
+     * Название визитки
+     * @type {string}
+     */
     const [cardName, setCardName] = useState('');
+
+    /**
+     * Полное имя
+     * @type {string}
+     */
     const [fullName, setFullName] = useState('');
+
+    /**
+     * Фамилия
+     * @type {string}
+     */
     const [surname, setSurname] = useState('');
+
+    /**
+     * Должность
+     * @type {string}
+     */
     const [position, setPosition] = useState('');
+
+    /**
+     * Номер телефона
+     * @type {string}
+     */
     const [phoneNumber, setPhoneNumber] = useState('');
+
+    /**
+     * Email
+     * @type {string}
+     */
     const [email, setEmail] = useState('');
+
+    /**
+     * Образование
+     * @type {string}
+     */
     const [degree, setDegree] = useState('');
+
+    /**
+     * О себе
+     * @type {string}
+     */
     const [aboutMe, setAboutMe] = useState('');
+
+    /**
+     * Адрес
+     * @type {string}
+     */
     const [address, setAddress] = useState('');
+
+    /**
+     * Социальные сети
+     * @type {Array<Object>}
+     */
     const [socialNetworks, setSocialNetworks] = useState([{}]);
+
+    /**
+     * Информация о компании
+     * @type {Object}
+     */
     const [companyInfo, setCompanyInfo] = useState({ companyName: '', businessLine: '', phoneNumber: '', email: '', companyWebsite: '', address: '' });
 
+    /**
+     * Сообщение об ошибке
+     * @type {string}
+     */
     const [error, setError] = useState("");
+
+    /**
+     * Сообщение об ошибке генерации текста
+     * @type {string}
+     */
     const [generateErrorText, setGenerateErrorTest] = useState("");
+
+    /**
+     * Флаг загрузки данных
+     * @type {boolean}
+     */
     const [loading, setLoading] = useState(true);
+
+    /**
+     * Сообщение об ошибке загрузки данных
+     * @type {string}
+     */
     const [loadError, setLoadError] = useState("");
 
+    /**
+     * Показывает сообщение об ошибке
+     * @param {string} message - Сообщение об ошибке
+     */
     const showError = (message) => {
         setError(message);
         setTimeout(() => setError(null), 5000);
     };
 
+    /**
+     * Показывает сообщение об ошибке генерации текста
+     * @param {string} message - Сообщение об ошибке генерации
+     */
     const showGenerateError = (message) => {
         setGenerateErrorTest(message)
         setTimeout(() => setGenerateErrorTest(null), 5000);
@@ -93,21 +179,39 @@ export default function EditCardPage() {
         fetchCard();
     }, [id, navigate]);
 
+    /**
+     * Обрабатывает изменение социальной сети
+     * @param {number} index - Индекс социальной сети
+     * @param {string} field - Поле для изменения
+     * @param {string} value - Новое значение
+     */
     const handleSocialNetworkChange = (index, field, value) => {
         const newSocialNetworks = [...socialNetworks];
         newSocialNetworks[index][field] = value;
         setSocialNetworks(newSocialNetworks);
     };
 
+    /**
+     * Добавляет новую социальную сеть
+     */
     const addSocialNetwork = () => {
         setSocialNetworks([...socialNetworks, { name: '', link: '' }]);
     };
 
+    /**
+     * Удаляет социальную сеть
+     * @param {number} index - Индекс социальной сети для удаления
+     */
     const removeSocialNetwork = (index) => {
         const newSocialNetworks = socialNetworks.filter((_, i) => i !== index);
         setSocialNetworks(newSocialNetworks);
     };
 
+    /**
+     * Обрабатывает изменение информации о компании
+     * @param {string} field - Поле для изменения
+     * @param {string} value - Новое значение
+     */
     const handleCompanyInfoChange = (field, value) => {
         setCompanyInfo({
             ...companyInfo,
@@ -115,6 +219,9 @@ export default function EditCardPage() {
         });
     };
 
+    /**
+     * Обрабатывает обновление визитки
+     */
     const handleUpdateCard = async () => {
         if (cardName === '' || cardName === null || fullName === null || fullName === '') {
             showError("Убедитесь, что поля 'Название визитки' и 'Имя/отчество' заполнены")
@@ -193,6 +300,9 @@ export default function EditCardPage() {
         }
     };
 
+    /**
+     * Генерирует текст "О себе" на основе должности и образования
+     */
     const generateAboutMe = async () => {
         if (!position.trim() || !degree.trim()) {
             showGenerateError("Необходимо заполнить поля \"Должность\" и \"Образование\" для создания текста");
